@@ -9,49 +9,76 @@ function App() {
 
   const [todo , setTodo] = useState([])
 
+
   function addTodo(event) {
-    event.preventDefault()
+    event.preventDefault();
     console.log(title.current.value);
     console.log(description.current.value);
 
-    todo.push({
+    
+    setTodo([...todo , {
       title: title.current.value,
-      desc: description.current.value,
-      id: Date.now()
-    })
-    setTodo([...todo])
+      description: description.current.value,
+      id: Date.now(),
+    }])
 
     title.current.value = ''
     description.current.value = ''
 
   }
-  
+
+  function deleteTodo(index){
+    // console.log('delete', index);
+    todo.splice(index , 1)
+    setTodo([...todo])
+  }
+
+  function editTodo(index){
+    // console.log('edit' , index);
+    const updatedTitle = prompt('enter updated title')
+    const updatedDesc = prompt('enter updated description')
+
+    if(updatedTitle && updatedDesc === ''){
+      alert("please enter updated value")
+      return
+    }
+
+    todo[index].title = updatedTitle
+    todo[index].description =updatedDesc
+    setTodo([...todo])
+    
+  }
 
   return (
     <>
-     <form onSubmit={addTodo}>
+     <form style={{
+        textAlign : 'center',
+      }} onSubmit={addTodo}>
       <h1>Todo App</h1>
      <input type="text" placeholder='enter title' ref={title}/>
      <br /><br />
      <input type="text" placeholder='enter description' ref={description} />
      <br /><br />
-     <button>Add</button>
+     <button type="submit">Add todo</button>
      </form>
 
-     <div>
-      {todo.length > 0 ? todo.map((item)=>{
-        <div style={{
+     <div style={{
+      textAlign:'center',
+     }}>
+      {todo.length > 0 ? todo.map((item , index)=>{
+        return <div key={item.id} style={{
           border: "1px solid black",
-          padding:"20px",
-          margin:"20px",
-          borderRadius:"20px"
+          padding:"15px",
+          margin:"10px",
+          borderRadius:"20px",
+          
         }}>
-          <h1>title:{item.title}</h1>
-          <h1>desc: {item.description}</h1><br />
-          <button>delete</button>
-          <button>edit</button>
+          <h3>Title:{item.title}</h3>
+          <h3>Desc: {item.description}</h3><br />
+          <button onClick={()=> deleteTodo(index)}>delete</button>
+          <button onClick={()=> editTodo(index)}>edit</button>
         </div>
-      }): <h1>No todo...</h1>
+      }): <h3>No todo...</h3>
     }
      </div>
     </>
